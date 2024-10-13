@@ -6,14 +6,14 @@ This project is built off of an existing computer vision repository created by *
 
 ## Controls:
 ###    Gestures
-        - Draw: Right Pointer
-        - Erase: Left Open Hand
-        - Clear: Right Open Hand (2 seconds)
+        Draw: Right Pointer
+        Erase: Left Open Hand
+        Clear: Right Open Hand (2 seconds)
 ###    Color
-        - 1: Black
-        - 2: Red
-        - 3: Green
-        - 4: Blue
+        1: Black
+        2: Red
+        3: Green
+        4: Blue
 
 # hand-gesture-recognition-using-mediapipe
 Estimate hand pose using MediaPipe (Python version).<br> This is a sample 
