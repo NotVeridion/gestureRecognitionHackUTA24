@@ -25,7 +25,7 @@ def get_args():
 
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--width", help='cap width', type=int, default=800)
-    parser.add_argument("--height", help='cap height', type=int, default=700)
+    parser.add_argument("--height", help='cap height', type=int, default=400)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -49,7 +49,7 @@ def main():
     test = 25
 
     # Set up the screen
-    screen = pygame.display.set_mode((args.width, args.height))
+    screen = pygame.display.set_mode((800, 400))
     pygame.display.set_caption("Draw While Moving Cursor")
 
     # Colors
@@ -251,6 +251,7 @@ def main():
             object_y = centerPalm[1] 
 
             circle_rect = pygame.Rect(object_x - object_radius, object_y- object_radius, object_radius * 2, object_radius * 2)
+            circle_rect.clamp_ip(screen.get_rect())
             pygame.draw.circle(draw_surface, white, centerPalm, 50)
             # Restore the background at the previous position
             if prev_x is not None and prev_y is not None and background_surface is not None:
