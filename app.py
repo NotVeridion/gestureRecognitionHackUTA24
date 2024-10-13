@@ -126,6 +126,7 @@ def main():
     mode = 0
 
     while True:
+        isPointer = False
         fps = cvFpsCalc.get()
 
         # Process Key (ESC: end) #################################################
@@ -157,9 +158,6 @@ def main():
                 # Landmark calculation
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
 
-                #grab fingerTip Coordinates
-                fingerTip = list(landmark_list[8])
-
 
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
@@ -173,9 +171,15 @@ def main():
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
                 if hand_sign_id == 2:  # Point gesture
-                    point_history.append(landmark_list[8])
+                    isPointer = True
                 else:
                     point_history.append([0, 0])
+
+                #grab fingerTip Coordinates
+                if isPointer is True:
+                    fingerTip = list(landmark_list[8])
+                else:
+                    fingerTip = -1
 
                 # Finger gesture classification
                 finger_gesture_id = 0
@@ -218,13 +222,11 @@ def main():
         #fingerTipPos = (fingerTip[0], fingerTip[1])
         #fingerTipY= fingerTip[1]
         #fingerTipX= fingerTip[0]
-        pygame.draw.circle(screen, red, fingerTip,10)
-
+        if fingerTip != -1:
+            pygame.draw.circle(screen, red, fingerTip,10)
 
         # Update the display
         pygame.display.flip()
-
-
 
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
