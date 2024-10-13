@@ -25,8 +25,8 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--width", help='cap width', type=int, default=800)
-    parser.add_argument("--height", help='cap height', type=int, default=600)
+    parser.add_argument("--width", help='cap width', type=int, default=1920)
+    parser.add_argument("--height", help='cap height', type=int, default=1080)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -50,7 +50,7 @@ def main():
     test = 25
 
     # Set up the screen
-    screen = pygame.display.set_mode((args.width, args.height))
+    screen = pygame.display.set_mode((1000, 600))
     pygame.display.set_caption("Draw While Moving Cursor")
 
     # Colors
@@ -152,9 +152,10 @@ def main():
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
-        if key == 27:  # ESC
+        py_keys = pygame.key.get_pressed()
+        if (key == 27 or py_keys[pygame.K_ESCAPE]):  # ESC
             break
-        elif key == 32:
+        elif (key == 32 or py_keys[pygame.K_SPACE]):
             if canDraw == False:
                 canDraw = True
             else:
