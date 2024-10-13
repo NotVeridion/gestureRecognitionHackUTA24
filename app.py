@@ -17,8 +17,6 @@ from utils import CvFpsCalc
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
-import ctypes
-
 # Initialize Pygame
 pygame.init()
 
