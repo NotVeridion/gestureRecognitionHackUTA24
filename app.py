@@ -12,6 +12,7 @@ import tkinter as tk
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
+import time
 
 from utils import CvFpsCalc
 from model import KeyPointClassifier
@@ -139,6 +140,9 @@ def main():
     #  ########################################################################
     mode = 0
 
+    start_time = time.time()
+    current_time = float()
+
     while True:
         fps = cvFpsCalc.get()
 
@@ -193,8 +197,15 @@ def main():
                     point_history.append(landmark_list[8])
                 else:
                     point_history.append([0, 0])
+                # Check open hand (2 seconds) for clearing canvas
+                if (current_time - start_time) > 2:
+                    draw_surface.fill(background_color)
+                    start_time = time.time()
+                elif hand_sign_id == 0 and results.multi_handedness[0].classification[0].label == "Right":
+                    current_time = time.time()
+                else:
+                    start_time = time.time()
 
-                    
                 test = (keypoint_classifier_labels[hand_sign_id])
 
 
@@ -221,7 +232,6 @@ def main():
                     keypoint_classifier_labels[hand_sign_id],
                     point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
-            print(results.multi_handedness[0].classification[0].label)
             handSide = results.multi_handedness[0].classification[0].label
 
 
