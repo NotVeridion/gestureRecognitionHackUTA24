@@ -58,7 +58,22 @@ def main():
     red = (255, 0, 0)
 
     # Fill the background with white
-    screen.fill(white)
+    background_color = white
+    screen.fill(background_color)
+
+    # dimensions of the object  
+    object_color = (255, 0, 0)
+    object_radius = 5
+
+    # Save Previous background of cursor
+    prev_x, prev_y = None, None
+    background_surface = None
+
+    # Seperate screen for draw/erase
+    draw_surface = screen.copy()
+
+    # Left or Right
+    handSide = None
 
     cap_device = args.device
     cap_width = args.width
@@ -125,8 +140,7 @@ def main():
     mode = 0
 
     while True:
-        #fps = cvFpsCalc.get()
-        fps = 60
+        fps = cvFpsCalc.get()
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
@@ -161,7 +175,7 @@ def main():
                 fingerTip = list(landmark_list[8])
                 centerPalm = list(landmark_list[9])
                 if(fingerTipPos[0] == [0, 0]):
-                    fingerTipPos[1] = fingerTip   
+                    fingerTipPos[0] = fingerTip   
                 fingerTipPos[1] = fingerTip
                
                 # Conversion to relative coordinates / normalized coordinates
@@ -207,26 +221,70 @@ def main():
                     keypoint_classifier_labels[hand_sign_id],
                     point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
+            print(results.multi_handedness[0].classification[0].label)
+            handSide = results.multi_handedness[0].classification[0].label
 
-            if(test == "Pointer" and results.multi_handedness[0].classification[0].label == "Right"):
-                pygame.draw.line(screen, black, fingerTipPos[0], fingerTipPos[1],5)
-                pygame.display.flip()
-            elif(test == "Open" and results.multi_handedness[0].classification[0].label == "Left"):
-                pygame.draw.circle(screen, white, centerPalm, 75)
 
         else:
             point_history.append([0, 0])
         
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
-        fingerTipPos[0] = fingerTipPos[1]
+   
 
         # Pygame Drawing
+        object_x = fingerTip[0]
+        object_y = fingerTip[1]
+
+        # Create Cursor
+        circle_rect = pygame.Rect(object_x - object_radius, object_y- object_radius, object_radius * 2, object_radius * 2)
+        
+        #Prevent cursor going off screen
+        circle_rect.clamp_ip(screen.get_rect())
+
+        if(test == "Pointer" and handSide == "Right"):
+            pygame.draw.line(draw_surface, black, fingerTipPos[0], fingerTipPos[1],5)
+        elif(test == "Open" and handSide == "Left"):
+            pygame.draw.circle(screen, white, centerPalm, 50)
+
+            object_x = centerPalm[0] 
+            object_y = centerPalm[1] 
+
+            circle_rect = pygame.Rect(object_x - object_radius, object_y- object_radius, object_radius * 2, object_radius * 2)
+            pygame.draw.circle(draw_surface, white, centerPalm, 50)
+            # Restore the background at the previous position
+            if prev_x is not None and prev_y is not None and background_surface is not None:
+                screen.blit(background_surface, (prev_x, prev_y))
+
+            # Save the background where the object will be drawn
+            background_surface = screen.subsurface(circle_rect).copy()
+
+            # Draw the object at the new position
+            pygame.draw.circle(screen, object_color, circle_rect.center, object_radius)
+            # Update previous position
+            prev_x, prev_y =   circle_rect.x, circle_rect.y
+            
+            # Update the display
+            pygame.display.flip()
+
+        screen.blit(draw_surface, (0, 0))
+        # Restore the background at the previous position
+        if prev_x is not None and prev_y is not None and background_surface is not None:
+            screen.blit(background_surface, (prev_x, prev_y))
+
+        # Save the background where the object will be drawn
+        background_surface = screen.subsurface(circle_rect).copy()
+
+        # Draw the object at the new position
+        pygame.draw.circle(screen, object_color, circle_rect.center, object_radius)
+        # Update previous position
+        prev_x, prev_y =   circle_rect.x, circle_rect.y
         
         # Update the display
         pygame.display.flip()
-        
-        
+
+        #Move final pos to initial
+        fingerTipPos[0] = fingerTipPos[1]
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
 
