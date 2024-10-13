@@ -8,7 +8,7 @@ from collections import Counter
 from collections import deque
 
 import pygame
-
+import tkinter as tk
 
 import cv2 as cv
 import numpy as np
@@ -21,11 +21,15 @@ from model import PointHistoryClassifier
 # Initialize Pygame
 pygame.init()
 
+
 # Set up the screen
-screen_width = 800
-screen_height = 600
+screen_width = 600
+screen_height = 400
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Draw While Moving Cursor")
+test = ""
+clock = pygame.time.Clock()
+clock.tick(60)
 
 # Colors
 white = (255, 255, 255)
@@ -41,8 +45,8 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--width", help='cap width', type=int, default=960)
-    parser.add_argument("--height", help='cap height', type=int, default=540)
+    parser.add_argument("--width", help='cap width', type=int, default=600)
+    parser.add_argument("--height", help='cap height', type=int, default=400)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -65,19 +69,24 @@ def main():
     test = 25
 
 
+
     cap_device = args.device
     cap_width = args.width
     cap_height = args.height
+
 
     use_static_image_mode = args.use_static_image_mode
     min_detection_confidence = args.min_detection_confidence
     min_tracking_confidence = args.min_tracking_confidence
 
+
     use_brect = True
 
     #Pointer fingertip Position
     fingerTip = [ 0, 0]
-
+    fingerTipPos = [[0,0],[0,0]]
+    centerPalm =[0,0]
+    times = True
 
     # Camera preparation ###############################################################
     cap = cv.VideoCapture(cap_device)
@@ -126,8 +135,8 @@ def main():
     mode = 0
 
     while True:
-        isPointer = False
-        fps = cvFpsCalc.get()
+        #fps = cvFpsCalc.get()
+        fps = 60
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
@@ -158,6 +167,13 @@ def main():
                 # Landmark calculation
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
 
+                #grab fingerTip Coordinates
+                fingerTip = list(landmark_list[8])
+                centerPalm = list(landmark_list[9])
+
+                fingerTipPos[1] = fingerTip
+
+
 
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
@@ -171,15 +187,13 @@ def main():
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
                 if hand_sign_id == 2:  # Point gesture
-                    isPointer = True
+                    point_history.append(landmark_list[8])
                 else:
                     point_history.append([0, 0])
 
-                #grab fingerTip Coordinates
-                if isPointer is True:
-                    fingerTip = list(landmark_list[8])
-                else:
-                    fingerTip = -1
+                    
+                test = (keypoint_classifier_labels[hand_sign_id])
+
 
                 # Finger gesture classification
                 finger_gesture_id = 0
@@ -194,6 +208,7 @@ def main():
                     finger_gesture_history).most_common()
 
                 # Drawing part
+
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
                 debug_image = draw_landmarks(debug_image, landmark_list)
                 debug_image = draw_info_text(
@@ -208,26 +223,16 @@ def main():
 
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
-
-        # Main loop
-        # Check if the mouse button is pressed
-        mouse_pressed = pygame.mouse.get_pressed()
-        if mouse_pressed[0]:  # Left mouse button is pressed
-            # Get the position of the cursor
-            mouse_pos = pygame.mouse.get_pos()
-            print(fingerTip)
-            print(fingerTip[1])
-            print(fingerTip[0])
-            # Draw a circle at the mouse position
-        #fingerTipPos = (fingerTip[0], fingerTip[1])
-        #fingerTipY= fingerTip[1]
-        #fingerTipX= fingerTip[0]
-        if fingerTip != -1:
-            pygame.draw.circle(screen, red, fingerTip,10)
-
+        print(test)
+        # Pygame Drawing
+        if(test == "Pointer"):
+            pygame.draw.line(screen, black, fingerTipPos[0], fingerTipPos[1],5)
+            pygame.display.flip()
+        if(test == "Open"):
+            pygame.draw.circle(screen, white, centerPalm, 50)
         # Update the display
         pygame.display.flip()
-
+        fingerTipPos[0] = fingerTipPos[1]
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
 
