@@ -26,7 +26,7 @@ def get_args():
 
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--width", help='cap width', type=int, default=800)
-    parser.add_argument("--height", help='cap height', type=int, default=400)
+    parser.add_argument("--height", help='cap height', type=int, default=600)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -50,7 +50,7 @@ def main():
     test = 25
 
     # Set up the screen
-    screen = pygame.display.set_mode((800, 400))
+    screen = pygame.display.set_mode((args.width, args.height))
     pygame.display.set_caption("Draw While Moving Cursor")
 
     # Colors
@@ -140,8 +140,12 @@ def main():
     #  ########################################################################
     mode = 0
 
+    # Timer variables for clear canvas gesture
     start_time = time.time()
     current_time = float()
+
+    # bool for toggle draw
+    canDraw = False
 
     while True:
         fps = cvFpsCalc.get()
@@ -150,7 +154,14 @@ def main():
         key = cv.waitKey(10)
         if key == 27:  # ESC
             break
+        elif key == 32:
+            if canDraw == False:
+                canDraw = True
+            else:
+                canDraw = False
+
         number, mode = select_mode(key, mode)
+
 
         # Camera capture #####################################################
         ret, image = cap.read()
@@ -237,6 +248,7 @@ def main():
 
         else:
             point_history.append([0, 0])
+            start_time = time.time()
         
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
@@ -252,7 +264,7 @@ def main():
         #Prevent cursor going off screen
         circle_rect.clamp_ip(screen.get_rect())
 
-        if(test == "Pointer" and handSide == "Right"):
+        if(test == "Pointer" and handSide == "Right" and canDraw):
             pygame.draw.line(draw_surface, black, fingerTipPos[0], fingerTipPos[1],5)
         elif(test == "Open" and handSide == "Left"):
             pygame.draw.circle(screen, white, centerPalm, 50)
