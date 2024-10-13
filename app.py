@@ -163,9 +163,7 @@ def main():
                 if(fingerTipPos[0] == [0, 0]):
                     fingerTipPos[1] = fingerTip   
                 fingerTipPos[1] = fingerTip
-
-
-
+               
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
@@ -209,21 +207,26 @@ def main():
                     keypoint_classifier_labels[hand_sign_id],
                     point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
+
+            if(test == "Pointer" and results.multi_handedness[0].classification[0].label == "Right"):
+                pygame.draw.line(screen, black, fingerTipPos[0], fingerTipPos[1],5)
+                pygame.display.flip()
+            elif(test == "Open" and results.multi_handedness[0].classification[0].label == "Left"):
+                pygame.draw.circle(screen, white, centerPalm, 75)
+
         else:
             point_history.append([0, 0])
-
+        
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
-        print(test)
+        fingerTipPos[0] = fingerTipPos[1]
+
         # Pygame Drawing
-        if(test == "Pointer"):
-            pygame.draw.line(screen, black, fingerTipPos[0], fingerTipPos[1],5)
-            pygame.display.flip()
-        if(test == "Open"):
-            pygame.draw.circle(screen, white, centerPalm, 50)
+        
         # Update the display
         pygame.display.flip()
-        fingerTipPos[0] = fingerTipPos[1]
+        
+        
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
 
