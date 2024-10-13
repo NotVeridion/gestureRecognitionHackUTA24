@@ -25,8 +25,8 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--width", help='cap width', type=int, default=1920)
-    parser.add_argument("--height", help='cap height', type=int, default=1080)
+    parser.add_argument("--width", help='cap width', type=int, default=800)
+    parser.add_argument("--height", help='cap height', type=int, default=600)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -50,20 +50,22 @@ def main():
     test = 25
 
     # Set up the screen
-    screen = pygame.display.set_mode((1000, 600))
+    screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Draw While Moving Cursor")
 
     # Colors
     white = (255, 255, 255)
     black = (0, 0, 0)
     red = (255, 0, 0)
+    green = (0, 255, 0)
+    blue = (0, 0, 255)
 
     # Fill the background with white
     background_color = white
     screen.fill(background_color)
 
     # dimensions of the object  
-    object_color = (255, 0, 0)
+    object_color = black
     object_radius = 5
 
     # Save Previous background of cursor
@@ -144,7 +146,7 @@ def main():
     start_time = time.time()
     current_time = float()
 
-    # bool for toggle draw
+    # bools for toggling
     canDraw = False
 
     while True:
@@ -162,6 +164,17 @@ def main():
                 canDraw = False
 
         number, mode = select_mode(key, mode)
+
+        # Process Key for colors
+        if py_keys[pygame.K_1]:
+            object_color = black
+        elif py_keys[pygame.K_2]:
+            object_color = red
+        elif py_keys[pygame.K_3]:
+            object_color = green
+        elif py_keys[pygame.K_4]:
+            object_color = blue
+        
 
 
         # Camera capture #####################################################
@@ -266,9 +279,9 @@ def main():
         circle_rect.clamp_ip(screen.get_rect())
 
         if(test == "Pointer" and handSide == "Right" and canDraw):
-            pygame.draw.line(draw_surface, black, fingerTipPos[0], fingerTipPos[1],5)
+            pygame.draw.line(draw_surface, object_color, fingerTipPos[0], fingerTipPos[1],5)
         elif(test == "Open" and handSide == "Left"):
-            pygame.draw.circle(screen, white, centerPalm, 50)
+            pygame.draw.circle(screen, background_color, centerPalm, 50)
 
             object_x = centerPalm[0] 
             object_y = centerPalm[1] 
