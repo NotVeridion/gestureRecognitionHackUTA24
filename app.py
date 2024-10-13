@@ -124,9 +124,12 @@ def main():
     #  ########################################################################
     mode = 0
 
+    # Counter for clearing canvas with open hand
+    counter = 0
+    start = False
+
     while True:
-        #fps = cvFpsCalc.get()
-        fps = 60
+        fps = cvFpsCalc.get()
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
@@ -140,6 +143,11 @@ def main():
             break
         image = cv.flip(image, 1)  # Mirror display
         debug_image = copy.deepcopy(image)
+
+        if start == False:
+            frames_to_count = cvFpsCalc.get()
+            print(f'Max count: {frames_to_count}')
+            start = True
 
         # Detection implementation #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -180,8 +188,17 @@ def main():
                     point_history.append(landmark_list[8])
                 else:
                     point_history.append([0, 0])
+                # Check open hand (5 seconds) for clearing canvas
+                if counter > frames_to_count * 5:
+                    print("Clearing Canvas")
+                    screen.fill(white)
+                    counter = 0
+                elif hand_sign_id == 0:
+                    counter += 1
+                else:
+                    counter = 0
 
-                    
+
                 test = (keypoint_classifier_labels[hand_sign_id])
 
 
@@ -213,7 +230,6 @@ def main():
 
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
-        print(test)
         # Pygame Drawing
         if(test == "Pointer"):
             pygame.draw.line(screen, black, fingerTipPos[0], fingerTipPos[1],5)
