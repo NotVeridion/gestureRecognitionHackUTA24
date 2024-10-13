@@ -135,7 +135,8 @@ def main():
     mode = 0
 
     while True:
-        fps = cvFpsCalc.get()
+        #fps = cvFpsCalc.get()
+        fps = 60
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
@@ -170,7 +171,7 @@ def main():
                 fingerTip = list(landmark_list[8])
                 centerPalm = list(landmark_list[9])
                 if(fingerTipPos[0] == [0, 0]):
-                    fingerTipPos[0] = fingerTip   
+                    fingerTipPos[1] = fingerTip   
                 fingerTipPos[1] = fingerTip
 
 
