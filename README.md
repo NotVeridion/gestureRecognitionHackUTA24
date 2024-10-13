@@ -24,6 +24,8 @@ pygame, opencv-python, numpy, mediapipe, tensorflow, seaborn
 python app.py
 ### Make sure all needed packages are installed!
 
+### Gesture recognition repository below
+
 # hand-gesture-recognition-using-mediapipe
 Estimate hand pose using MediaPipe (Python version).<br> This is a sample 
 program that recognizes hand signs and finger gestures with a simple MLP using the detected key points.
