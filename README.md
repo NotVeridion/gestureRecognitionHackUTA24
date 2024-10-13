@@ -1,4 +1,4 @@
-# Gesture Recognition Art for HackUTA 2024
+# GestureArt for HackUTA6 (2024)
 Computer Vision project that recognizes gestures and allows users to draw art on canvas used through Pygame engine. 
 **Project built by: Matthew Nguyen, Vincent Trinh, Luke Siharath, Andrew Trinh**
 
@@ -15,6 +15,14 @@ This project is built off of an existing computer vision repository created by *
         2: Red
         3: Green
         4: Blue
+
+## Packages Used:
+pygame, cv2, numpy, mediapipe, time, tensorflow, seaborn
+
+## Running the code
+### Have all files within a directory and run app.py using:
+python app.py
+### Make sure all needed packages are installed!
 
 # hand-gesture-recognition-using-mediapipe
 Estimate hand pose using MediaPipe (Python version).<br> This is a sample 
