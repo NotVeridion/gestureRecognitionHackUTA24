@@ -7,6 +7,7 @@ This project is built off of an existing computer vision repository created by *
 ## Controls:
 ###    Gestures
         Draw: Right Pointer
+        Toggle Drawing Mode: Space
         Erase: Left Open Hand
         Clear: Right Open Hand (2 seconds)
 ###    Color
