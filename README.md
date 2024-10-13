@@ -2,7 +2,7 @@
 Computer vision project that recognizes gestures and allows users to draw art on canvas through Pygame engine
 ### **Created by: Matthew Nguyen, Vincent Trinh, Luke Siharath, Andrew Trinh**
 
-This project is built off of an existing computer vision repository created by **Kazuhito Takahashi**. See credits and link to original repository at bottom of this README
+This project is built off of an existing computer vision repository created by **Kazuhito Takahashi** and translated by **Nikita Kiselov**. See credits and link to original repository at bottom of this README
 
 ## Controls:
 ###    Gestures
