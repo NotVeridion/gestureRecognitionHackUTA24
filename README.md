@@ -1,3 +1,20 @@
+# Gesture Recognition Art for HackUTA 2024
+Computer Vision project that recognizes gestures and allows users to draw art on canvas used through Pygame engine. 
+**Project built by: Matthew Nguyen, Vincent Trinh, Luke Siharath, Andrew Trinh**
+
+This project is built off of an existing computer vision repository created by **Kazuhito Takahashi**. See credits and link to original repository at bottom of READ.md.
+
+## Controls:
+###    Gestures
+        - Draw: Right Pointer
+        - Erase: Left Open Hand
+        - Clear: Right Open Hand (2 seconds)
+###    Color
+        - 1: Black
+        - 2: Red
+        - 3: Green
+        - 4: Blue
+
 # hand-gesture-recognition-using-mediapipe
 Estimate hand pose using MediaPipe (Python version).<br> This is a sample 
 program that recognizes hand signs and finger gestures with a simple MLP using the detected key points.
