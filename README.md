@@ -17,7 +17,7 @@ This project is built off of an existing computer vision repository created by *
         4: Blue
 
 ## Packages Used:
-pygame, opencv-python, numpy, mediapipe, time, tensorflow, seaborn
+pygame, opencv-python, numpy, mediapipe, tensorflow, seaborn
 
 ## Running the code
 ### Have all files within a directory and run app.py using:
